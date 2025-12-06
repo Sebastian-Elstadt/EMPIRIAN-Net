@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: EMPIRIAN_Net
+    restart: always
+    build: .
+    ports:
+      - 4010:8080
+    environment:
+      - ENVIRONMENT_TYPE=container
+      - DATABASE_CONNECTION_STRING=${DATABASE_CONNECTION_STRING}
+    depends_on:
+      - db
+    networks:
+      - master
+  db:
+    container_name: EMPIRIAN_Database
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_UNAME}
+      - POSTGRES_PASSWORD=${DB_PWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - master
+    ports:
+      - 4011:5432
+
+volumes:
+  database:
+    driver: local
+
+networks:
+  master:
